@@ -2,8 +2,10 @@ import requests
 import json
 from config import keys
 
+
 class ConvertionException(Exception):
     pass
+
 
 class Converter:
     @staticmethod
@@ -13,15 +15,17 @@ class Converter:
         try:
             quote_ticker = keys[quote]
         except KeyError:
-            raise ConvertionException(f'Не удалось обработать валюту {quote}')
+            raise ConvertionException(f'Не удалось обработать валюту {quote}! \nПроверьте корректность ввода тикера '
+                                      f'валюты.')
         try:
             base_ticker = keys[base]
         except KeyError:
-            raise ConvertionException(f'Не удалось обработать валюту {base}')
+            raise ConvertionException(f'Не удалось обработать валюту {base}! \nПроверьте корректность ввода тикера '
+                                      f'валюты.')
         try:
             amount = float(amount)
         except ValueError:
-            raise ConvertionException(f'Не удалось обработать количество {base}')
+            raise ConvertionException(f'Не удалось обработать количество {base}! \nПроверьте корректность ввода.')
         request = requests.get(f'https://min-api.cryptocompare.com/data/price?fsym={quote_ticker}&tsyms={base_ticker}')
-        total_base = json.loads(request.content)[keys[base]]*amount
+        total_base = json.loads(request.content)[keys[base]] * amount
         return total_base
